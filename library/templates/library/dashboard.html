@@ -1,0 +1,46 @@
+{% extends 'library/base.html' %}
+
+{% block content %}
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-8">
+    <div class="bg-white p-8 rounded-lg shadow text-center transition-transform hover:scale-105">
+        <div class="flex justify-center mb-2">
+            <i class="fas fa-book text-4xl text-blue-500"></i>
+        </div>
+        <div class="text-4xl font-extrabold text-blue-700 mb-2">{{ total_books }}</div>
+        <div class="text-lg font-medium text-gray-700 mb-1">Total Books</div>
+        <a href="{% url 'book-list' %}" class="mt-2 inline-block text-blue-500 hover:underline">View Books</a>
+    </div>
+    <div class="bg-white p-8 rounded-lg shadow text-center transition-transform hover:scale-105">
+        <div class="flex justify-center mb-2">
+            <i class="fas fa-users text-4xl text-green-500"></i>
+        </div>
+        <div class="text-4xl font-extrabold text-green-700 mb-2">{{ total_members }}</div>
+        <div class="text-lg font-medium text-gray-700 mb-1">Total Members</div>
+        <a href="{% url 'member-list' %}" class="mt-2 inline-block text-green-500 hover:underline">View Members</a>
+    </div>
+    <div class="bg-white p-8 rounded-lg shadow text-center transition-transform hover:scale-105">
+        <div class="flex justify-center mb-2">
+            <i class="fas fa-hand-holding text-4xl text-yellow-500"></i>
+        </div>
+        <div class="text-4xl font-extrabold text-yellow-700 mb-2">{{ total_loans }}</div>
+        <div class="text-lg font-medium text-gray-700 mb-1">Total Loans</div>
+        <a href="{% url 'loan-list' %}" class="mt-2 inline-block text-yellow-500 hover:underline">View Loans</a>
+    </div>
+    <div class="bg-white p-8 rounded-lg shadow text-center transition-transform hover:scale-105">
+        <div class="flex justify-center mb-2">
+            <i class="fas fa-money-bill-wave text-4xl text-red-500"></i>
+        </div>
+        <div class="text-4xl font-extrabold text-red-700 mb-2">{{ total_fines }}</div>
+        <div class="text-lg font-medium text-gray-700 mb-1">Total Fines</div>
+        <a href="{% url 'fine-list' %}" class="mt-2 inline-block text-red-500 hover:underline">View Fines</a>
+    </div>
+    <div class="bg-white p-8 rounded-lg shadow text-center transition-transform hover:scale-105 sm:col-span-2 md:col-span-2">
+        <div class="flex justify-center mb-2">
+            <i class="fas fa-exclamation-circle text-4xl text-pink-500"></i>
+        </div>
+        <div class="text-4xl font-extrabold text-pink-700 mb-2">{{ unpaid_fines }}</div>
+        <div class="text-lg font-medium text-gray-700 mb-1">Unpaid Fines</div>
+        <a href="{% url 'fine-list' %}" class="mt-2 inline-block text-pink-500 hover:underline">Manage Fines</a>
+    </div>
+</div>
+{% endblock %} 

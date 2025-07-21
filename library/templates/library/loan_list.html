@@ -1,0 +1,45 @@
+{% extends 'library/base.html' %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">Loan Records</h2>
+<table class="min-w-full bg-white rounded shadow overflow-hidden">
+    <thead class="bg-blue-100">
+        <tr>
+            <th class="py-2 px-4 text-left">Book</th>
+            <th class="py-2 px-4 text-left">Member</th>
+            <th class="py-2 px-4 text-left">Loan Date</th>
+            <th class="py-2 px-4 text-left">Due Date</th>
+            <th class="py-2 px-4 text-left">Return Date</th>
+            <th class="py-2 px-4 text-left">Status</th>
+            <th class="py-2 px-4 text-left">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for loan in loans %}
+        <tr class="border-b last:border-b-0">
+            <td class="py-2 px-4">{{ loan.book.title }}</td>
+            <td class="py-2 px-4">{{ loan.member.name }} ({{ loan.member.get_member_type_display }})</td>
+            <td class="py-2 px-4">{{ loan.loan_date }}</td>
+            <td class="py-2 px-4">{{ loan.due_date }}</td>
+            <td class="py-2 px-4">{{ loan.return_date|default:"-" }}</td>
+            <td class="py-2 px-4">
+                {% if loan.status == 'borrowed' %}
+                    <span class="inline-block px-2 py-1 bg-yellow-200 text-yellow-800 rounded text-xs">Borrowed</span>
+                {% elif loan.status == 'returned' %}
+                    <span class="inline-block px-2 py-1 bg-green-200 text-green-800 rounded text-xs">Returned</span>
+                {% endif %}
+            </td>
+            <td class="py-2 px-4">
+                {% if loan.status == 'borrowed' %}
+                    <a href="{% url 'return-book' loan.id %}" class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">Return</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7" class="text-center py-4 text-gray-500">No loans found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %} 

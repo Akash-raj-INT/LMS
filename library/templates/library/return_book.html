@@ -1,0 +1,10 @@
+{% extends 'library/base.html' %}
+
+{% block content %}
+<h2>Return Book</h2>
+<form method="post">
+    {% csrf_token %}
+    <p>Are you sure you want to return "{{ loan.book.title }}"?</p>
+    <button type="submit">Return</button>
+</form>
+{% endblock %}

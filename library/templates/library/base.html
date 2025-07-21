@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { padding: 20px; }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto p-4">
+        <h1 class="mb-4 text-3xl font-bold text-center text-blue-700">Library Management System</h1>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 p-4 rounded shadow bg-{{ message.tags }}-100 text-{{ message.tags }}-800">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        {% if user.is_authenticated %}
+        <nav class="flex space-x-4 mb-6 bg-white p-4 rounded shadow justify-center">
+            <a class="text-blue-600 hover:underline font-semibold" href="{% url 'dashboard' %}">Dashboard</a>
+            <a class="text-blue-600 hover:underline font-semibold" href="{% url 'book-list' %}">Books</a>
+            <a class="text-blue-600 hover:underline font-semibold" href="{% url 'member-list' %}">Members</a>
+            <a class="text-blue-600 hover:underline font-semibold" href="{% url 'loan-list' %}">Loans</a>
+            <a class="text-blue-600 hover:underline font-semibold" href="{% url 'fine-list' %}">Fines</a>
+            <a class="text-blue-600 hover:underline font-semibold" href="{% url 'add-book' %}">Add Book</a>
+            <a class="text-blue-600 hover:underline font-semibold" href="{% url 'logout' %}">Logout</a>
+        </nav>
+        {% endif %}
+        
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>
