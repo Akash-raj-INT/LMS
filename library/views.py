@@ -7,11 +7,16 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django import forms
 
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
+            username = form.cleaned_data['username']
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'Username already exists. Please choose another one.')
+                return render(request, 'library/register.html', {'form': form})
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
@@ -98,7 +103,13 @@ def delete_book(request, book_id):
 
 @login_required
 def member_list(request):
-    members = Member.objects.all()
+    if request.user.is_staff or request.user.is_superuser:
+        members = Member.objects.all()
+    else:
+        try:
+            members = [Member.objects.get(user=request.user)]
+        except Member.DoesNotExist:
+            members = []
     return render(request, 'library/member_list.html', {'members': members})
 
 @login_required
@@ -120,6 +131,11 @@ def delete_member(request, member_id):
 @login_required
 def borrow_book(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
+    try:
+        member = Member.objects.get(user=request.user)
+    except Member.DoesNotExist:
+        messages.error(request, 'You must be a registered member to borrow books.')
+        return redirect('book-list')
     if not book.is_available():
         messages.error(request, 'This book is not available for borrowing.')
         return redirect('book-list')
@@ -128,6 +144,7 @@ def borrow_book(request, book_id):
         if form.is_valid():
             loan = form.save(commit=False)
             loan.book = book
+            loan.member = member
             loan.loan_date = date.today()
             try:
                 loan.full_clean()
@@ -142,7 +159,8 @@ def borrow_book(request, book_id):
                     for error in errors:
                         messages.error(request, f'{field}: {error}')
     else:
-        form = LoanForm(initial={'book': book})
+        form = LoanForm(initial={'book': book, 'member': member})
+        form.fields['member'].widget = forms.HiddenInput()
     return render(request, 'library/loan_form.html', {'form': form, 'book': book})
 
 @login_required
@@ -159,7 +177,14 @@ def return_book(request, loan_id):
 
 @login_required
 def loan_list(request):
-    loans = Loan.objects.all().order_by('-loan_date')
+    if request.user.is_staff or request.user.is_superuser:
+        loans = Loan.objects.all().order_by('-loan_date')
+    else:
+        try:
+            member = Member.objects.get(user=request.user)
+            loans = Loan.objects.filter(member=member).order_by('-loan_date')
+        except Member.DoesNotExist:
+            loans = Loan.objects.none()
     return render(request, 'library/loan_list.html', {'loans': loans})
 
 @login_required

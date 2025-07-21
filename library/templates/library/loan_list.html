@@ -18,7 +18,7 @@
         {% for loan in loans %}
         <tr class="border-b last:border-b-0">
             <td class="py-2 px-4">{{ loan.book.title }}</td>
-            <td class="py-2 px-4">{{ loan.member.name }} ({{ loan.member.get_member_type_display }})</td>
+            <td class="py-2 px-4">{{ loan.member.user.get_full_name }} ({{ loan.member.get_member_type_display }})</td>
             <td class="py-2 px-4">{{ loan.loan_date }}</td>
             <td class="py-2 px-4">{{ loan.due_date }}</td>
             <td class="py-2 px-4">{{ loan.return_date|default:"-" }}</td>

@@ -1,10 +1,12 @@
 {% extends 'library/base.html' %}
 
 {% block content %}
-<h2>Return Book</h2>
-<form method="post">
-    {% csrf_token %}
-    <p>Are you sure you want to return "{{ loan.book.title }}"?</p>
-    <button type="submit">Return</button>
-</form>
+<h2 class="text-2xl font-bold mb-4">Return Book</h2>
+<div class="max-w-md mx-auto bg-white p-6 rounded shadow">
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <p class="text-gray-700">Are you sure you want to return <span class="font-semibold">"{{ loan.book.title }}"</span>?</p>
+        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Return</button>
+    </form>
+</div>
 {% endblock %}
