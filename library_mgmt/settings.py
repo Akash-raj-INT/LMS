@@ -81,10 +81,15 @@ WSGI_APPLICATION = 'library_mgmt.wsgi.application'
 
 tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
 
+name_path = tmpPostgres.path
+if isinstance(name_path, bytes):
+    name_path = name_path.decode()
+name_path = name_path.replace('/', '')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': tmpPostgres.path.replace('/', ''),
+        'NAME': name_path,
         'USER': tmpPostgres.username,
         'PASSWORD': tmpPostgres.password,
         'HOST': tmpPostgres.hostname,
