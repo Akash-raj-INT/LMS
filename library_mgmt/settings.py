@@ -16,10 +16,34 @@ from urllib.parse import urlparse, parse_qsl
 
 load_dotenv()
 
-from pathlib import Path
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+if DATABASE_URL:
+    tmpPostgres = urlparse(DATABASE_URL)
+    name_path = tmpPostgres.path
+    if isinstance(name_path, bytes):
+        name_path = name_path.decode()
+    name_path = name_path.replace('/', '')
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': name_path,
+            'USER': tmpPostgres.username,
+            'PASSWORD': tmpPostgres.password,
+            'HOST': tmpPostgres.hostname,
+            'PORT': 5432,
+            'OPTIONS': dict(parse_qsl(tmpPostgres.query)),
+        }
+    }
+else:
+    from pathlib import Path
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Quick-start development settings - unsuitable for production
@@ -74,29 +98,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'library_mgmt.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
-
-name_path = tmpPostgres.path
-if isinstance(name_path, bytes):
-    name_path = name_path.decode()
-name_path = name_path.replace('/', '')
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': name_path,
-        'USER': tmpPostgres.username,
-        'PASSWORD': tmpPostgres.password,
-        'HOST': tmpPostgres.hostname,
-        'PORT': 5432,
-        'OPTIONS': dict(parse_qsl(tmpPostgres.query)),
-    }
-}
 
 
 # Password validation
